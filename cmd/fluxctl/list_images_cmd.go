@@ -33,11 +33,13 @@ func (opts *serviceShowOpts) RunE(_ *cobra.Command, args []string) error {
 	if len(args) != 0 {
 		return errorWantedNoArgs
 	}
-	if opts.service == "" {
-		return newUsageError("--service flag required")
+
+	service, err := parseServiceOption(opts.service)
+	if err != nil {
+		return err
 	}
 
-	containers, err := opts.Fluxd.ServiceImages(opts.namespace, opts.service)
+	containers, err := opts.Fluxd.ListImages(service)
 	if err != nil {
 		return err
 	}

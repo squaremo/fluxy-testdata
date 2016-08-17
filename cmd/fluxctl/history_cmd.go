@@ -5,8 +5,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-
-	flux "github.com/weaveworks/fluxy"
 )
 
 type serviceHistoryOpts struct {
@@ -37,18 +35,9 @@ func (opts *serviceHistoryOpts) RunE(_ *cobra.Command, args []string) error {
 		return errorWantedNoArgs
 	}
 
-	var (
-		service flux.ServiceSpec
-		err     error
-	)
-
-	if opts.service == "" {
-		service = flux.ServiceSpecAll
-	} else {
-		service, err = flux.ParseServiceSpec(opts.service)
-		if err != nil {
-			return err
-		}
+	service, err := parseServiceOption(opts.service)
+	if err != nil {
+		return err
 	}
 
 	events, err := opts.Fluxd.History(service)
