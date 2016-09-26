@@ -13,13 +13,19 @@ spec:
       - name: key
         secret:
           secretName: fluxy-repo-key
+      - name: quay
+        secret:
+          secretName: quay-login-conf
       containers:
       - name: fluxy
         image: weaveworks/fluxy
-        imagePullPolicy: Never # must build manually
+        imagePullPolicy: Never
         ports:
         - containerPort: 3030
         volumeMounts:
+        - name: quay
+          mountPath: /var/run/secrets/fluxy/quay
+          readOnly: true
         - name: key
           mountPath: /var/run/secrets/fluxy/key
           readOnly: true
@@ -29,8 +35,9 @@ spec:
         - --kubernetes-host=https://kubernetes
         - --kubernetes-certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         - --kubernetes-bearer-token-file=/var/run/secrets/kubernetes.io/serviceaccount/token
-        - --database-driver=ql
-        - --database-source=file://history.db
+        - --database-driver=postgres
+        - --database-source=postgres://postgres:password@postgres:5432?sslmode=disable
+        - --registry-credentials=/var/run/secrets/fluxy/quay/config.json
         - --repo-url=git@github.com:squaremo/fluxy-testdata
         - --repo-key=/var/run/secrets/fluxy/key/id-rsa
         - --repo-path=testdata
