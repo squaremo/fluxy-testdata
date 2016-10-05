@@ -35,7 +35,6 @@ spec:
         - --kubernetes-host=https://kubernetes
         - --kubernetes-certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         - --kubernetes-bearer-token-file=/var/run/secrets/kubernetes.io/serviceaccount/token
-        - --database-driver=postgres
         - --database-source=postgres://postgres:password@postgres:5432?sslmode=disable
         - --registry-credentials=/var/run/secrets/fluxy/quay/config.json
         - --repo-url=git@github.com:squaremo/fluxy-testdata
